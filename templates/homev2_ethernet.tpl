@@ -1,7 +1,8 @@
+{ "model" : "homeV2Ethernet", "board": "senseBox:samd:sb" }
 /*
   senseBox:home - Citizen Sensing Platform
   Version: ethernetv2_0.2
-  Date: 2018-07-20
+  Date: 2018-09-06
   Homepage: https://www.sensebox.de https://www.opensensemap.org
   Author: Reedu GmbH & Co. KG
   Note: Sketch for senseBox:home Ethernet MCU Edition
@@ -17,11 +18,11 @@
 /* ------------------------------Configuration------------------------------ */
 /* ------------------------------------------------------------------------- */
 
+// Debug option: set to "true" if serial output is required
+bool debug = false;
+
 //Sensor Setup
-#define HDC_CONNECTED
-#define BMP_CONNECTED
-#define TSL_VEML_CONNECTED
-#define SDS_CONNECTED 
+@@SENSORS|toDefine 
 
 // Absolute number of sensors registered on openSenseMap
 static const uint8_t NUM_SENSORS = @@NUM_SENSORS@@; 
@@ -42,13 +43,13 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 EthernetClient client;
 
 // Interval of measuring and submitting values in seconds
-const unsigned int postingInterval = 10e3;
+const unsigned int postingInterval = 60e3;
 
 // address of the server to send to
 const char server[] PROGMEM = "@@INGRESS_DOMAIN@@";
 
 // senseBox ID
-const char SENSEBOX_ID[] PROGMEM = "@@SENSEBOX_ID@@"; //Lange N8 der Wissenschaft
+const char SENSEBOX_ID[] PROGMEM = "@@SENSEBOX_ID@@";
 
 // sensor IDs
 @@SENSOR_IDS|toProgmem@@
@@ -106,8 +107,7 @@ void addMeasurement(const char *sensorId, float value) {
   dataLength += 24 + 1; //length of ID + ','
   if (value == 0) dataLength += 4; // 0.00
   else 
-    //dataLength += String((int)value * 100).length() + 1; //length of measurement value + decimal digit
-  // to test:
+    value + decimal digit
     dataLength += String((int)value).length() + 3;
 }
 
@@ -125,7 +125,6 @@ void writeMeasurementsToClient() {
     // transmit buffer to client
     client.print(buffer);
     Serial.print(buffer);
-    //dataLength += String(buffer).length();
   }
 
   // reset num_measurements
@@ -153,23 +152,17 @@ void submitValues() {
                      "text/csv\nConnection: close\nContent-Length: %i\n\n"),
                 SENSEBOX_ID, server, dataLength);
       Serial.print(buffer);
-
       // send the HTTP POST request:
       client.print(buffer);
-
       // send measurements
       writeMeasurementsToClient();
-
       // send empty line to end the request
       client.println();
-
       uint16_t timeout = 0;
       // allow the response to be computed
-
       while (timeout <= 5000) {
         delay(10);
         timeout = timeout + 10;
-        //                Serial.println(timeout);
         if (client.available()) {
           break;
         }
@@ -186,14 +179,12 @@ void submitValues() {
           break;
         }
       }Serial.println("done!");
-
       // reset number of measurements
       num_measurements = 0;
       break;
     }
     delay(1000);
   }
-
   if (connected == false) {
     // Reset durchführen
     Serial.println(F("connection failed. Restarting..."));
@@ -204,18 +195,16 @@ void submitValues() {
       ;
   }
 }
-
 void setup() {
   // Initialize serial and wait for port to open:
   Serial.begin(9600);
-  while(!Serial);
+  if (debug) while(!Serial);
   Serial.println(F("----senseBox:home V2----\n"));
   delay(100);
   #ifdef SDS_CONNECTED
   SDS_UART_PORT.begin(9600);
   delay(1000);
   #endif
-
   Serial.print(F("xBee1 spi enable..."));
   senseBoxIO.SPIselectXB1(); // select XBEE1 spi
   Serial.println(F("done."));
@@ -225,14 +214,12 @@ void setup() {
   Serial.println(F("done"));
   senseBoxIO.powerI2C(false);delay(200);
   senseBoxIO.powerI2C(true);
-
   Ethernet.init(23);
   delay(100);
   // start the Ethernet connection:
   Serial.print(F("Trying to configure Ethernet using DHCP..."));
   if (Ethernet.begin(mac) == 0) {
     Serial.println(F("failed! Please check your cable connection."));
-    // no point in carrying on, so do nothing forevermore:
     // try to congifure using IP address instead of DHCP:
     Ethernet.begin(mac, myIp);
   }else Serial.println(F("done."));
@@ -268,12 +255,10 @@ void setup() {
   Serial.println(F("Starting loop in 3 seconds."));
   delay(3000);
 }
-
 void loop() {
   // capture loop start timestamp
   unsigned long start = millis();
   dataLength = NUM_SENSORS - 1; // excluding linebreak after last measurement
-
   // read measurements from sensors
   #ifdef HDC_CONNECTED
     float temp = HDC.readTemperature();
