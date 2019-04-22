@@ -60,6 +60,10 @@ const buildMatrix = {
 };
 
 for (const model of Object.keys(sketchTemplater._templates)) {
+  // Skip hackAir models
+  if (model.startsWith('hackAir')) {
+    continue;
+  }
   if (model.includes('V2')) {
     buildMatrix['sensebox:samd:sb'].push(model);
   } else {

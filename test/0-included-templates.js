@@ -58,9 +58,20 @@ describe('Included templates', function() {
     }
   });
 
+  it('should execute hackAir V2 Advanced model and make all substitutions', () => {
+    const box = Object.assign({ model: 'hackAirV2' }, testBox());
+    const sketch = mySketchTemplater.generateSketch(box);
+
+    expect(sketch).to.include(testDomain);
+  });
+
   it('should execute all other templates to execute and make all substitutions', function() {
     for (const model of Object.keys(mySketchTemplater._templates)) {
-      if (model !== 'custom' && model !== 'homeV2Lora') {
+      if (
+        model !== 'custom' &&
+        model !== 'homeV2Lora' &&
+        model !== 'hackAirV2'
+      ) {
         const box = Object.assign({ model: model }, testBox());
         const sketch = mySketchTemplater.generateSketch(box);
 
