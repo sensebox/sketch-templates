@@ -1,6 +1,4 @@
-{
-    "model" : "homeV2WifiFeinstaubOTA", "board" : "senseBox:samd:sb"
-}
+{"model" : "homeV2WifiFeinstaubOTA", "board" : "senseBox:samd:sb"}
 /*
   senseBox:home - Citizen Sensingplatform
   Version: wifiv2OTA_0.3
