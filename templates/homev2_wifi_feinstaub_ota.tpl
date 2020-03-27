@@ -16,7 +16,7 @@
 #include <WiFi101.h>
 #include <SPI.h>
 #include <Wire.h>
-#include "OTA.h"
+#include <OTA.h>
 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_HDC1000.h>
