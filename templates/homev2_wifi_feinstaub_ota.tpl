@@ -366,8 +366,11 @@ void setup()
         status = WiFi.begin(ssid, pass);
         // wait 10 seconds for connection:
         DEBUG2(F("Waiting 10 seconds for connection..."));
+        IPAddress ip = WiFi.localIP();
         delay(10000);
         DEBUG(F("done."));
+        DEBUG2(F("Your IP Adress is: "));
+        DEBUG(ip);
     }
     DEBUG(F("Setting up OTA functionalities"));
     delay(400);
