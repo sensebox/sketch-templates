@@ -73,7 +73,8 @@ const boxStub = function(model) {
     ],
     serialPort: 'Serial1',
     ssid: 'MY-HOME-NETWORK',
-    password: 'MY-SUPER-PASSWORD'
+    password: 'MY-SUPER-PASSWORD',
+    postingInterval: 60
   };
 };
 

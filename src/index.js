@@ -60,7 +60,8 @@ SketchTemplater.prototype._cloneBox = function _cloneBox({
   soilDigitalPort,
   soundMeterPort,
   ssid,
-  password
+  password,
+  postingInterval
 }) {
   return Object.assign(
     {},
@@ -74,7 +75,8 @@ SketchTemplater.prototype._cloneBox = function _cloneBox({
       SOUND_METER_PORT: soundMeterPort,
       SSID: ssid,
       PASSWORD: password,
-      SENSORS: sensors
+      SENSORS: sensors,
+      POSTING_INTERVAL: postingInterval
     }
   );
 };

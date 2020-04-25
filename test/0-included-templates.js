@@ -48,6 +48,14 @@ describe('Included templates', function() {
     }
   });
 
+  it('should execute mobile model with 10 second posting interval', function() {
+    // eslint-disable-next-line prettier/prettier
+    const box = Object.assign({ model: 'homeV2WifiGPSFeinstaub', postingInterval: 10 }, testBox());
+    const sketch = mySketchTemplater.generateSketch(box);
+
+    expect(sketch).to.include('10e3');
+  });
+
   it('should execute lora model and make all substitutions', function() {
     const box = Object.assign({ model: 'homeV2Lora' }, testBox());
 
