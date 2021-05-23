@@ -13,7 +13,8 @@
   "scripts": {
     "lint": "node_modules/.bin/eslint --fix \"{src,test,.scripts}/**/*.js\"",
     "test": "node_modules/.bin/mocha",
-    "arduino-test": "docker build -t arduino-test . && docker run arduino-test",
+    "arduino-test": "node arduino-test/build-sketches.js",
+    "arduino-test:docker": "docker build -t arduino-test . && docker run arduino-test",
     "version": "node .scripts/npm_version-update_changelog.js && git add CHANGELOG.md"
   },
   "devDependencies": {
